@@ -1,5 +1,6 @@
 package com.bignerdranch.android.sunset;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -58,6 +59,9 @@ public class SunsetFragment extends Fragment {
       heightAnimator.setInterpolator(new AccelerateInterpolator());
       // animator for the sky from mBlueSkyColor to mSunsetSkyColor.
       ObjectAnimator sunsetSkyAnimator = ObjectAnimator.ofInt(mSkyView, "backgroundColor", mBlueSkyColor, mSunsetSkyColor).setDuration(3000);
+      // use ArgbEvaluator to tell ObjectAnimator how to find values between the start (blue color)
+      // and end (orange color)
+      sunsetSkyAnimator.setEvaluator(new ArgbEvaluator());
       // animate the sun going down
       heightAnimator.start();
       // animate the sky color changes
