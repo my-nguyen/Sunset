@@ -1,5 +1,6 @@
 package com.bignerdranch.android.sunset;
 
+import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
@@ -57,14 +58,20 @@ public class SunsetFragment extends Fragment {
       // add acceleration to make the sun start out moving slowly and accelerate to a quicker pace
       // as it moves toward the horizon.
       heightAnimator.setInterpolator(new AccelerateInterpolator());
-      // animator for the sky from mBlueSkyColor to mSunsetSkyColor.
+      // animator for the sky going from blue to orange
       ObjectAnimator sunsetSkyAnimator = ObjectAnimator.ofInt(mSkyView, "backgroundColor", mBlueSkyColor, mSunsetSkyColor).setDuration(3000);
       // use ArgbEvaluator to tell ObjectAnimator how to find values between the start (blue color)
       // and end (orange color)
       sunsetSkyAnimator.setEvaluator(new ArgbEvaluator());
-      // animate the sun going down
-      heightAnimator.start();
-      // animate the sky color changes
-      sunsetSkyAnimator.start();
+      // animator for the sky going from orange to dark
+      ObjectAnimator nightSkyAnimator = ObjectAnimator.ofInt(mSkyView, "backgroundColor", mSunsetSkyColor, mNightSkyColor).setDuration(1500);
+      // see setEvaluator() above
+      nightSkyAnimator.setEvaluator(new ArgbEvaluator());
+      // AnimatorSet is a set of animations that can be played together.
+      AnimatorSet animatorSet = new AnimatorSet();
+      // play heightAnimator with sunsetSkyAnimator; also play heightAnimator before nightSkyAnimator
+      // which means the nightSkyAnimator won't start until the other two (played in sync) finish.
+      animatorSet.play(heightAnimator).with(sunsetSkyAnimator).before(nightSkyAnimator);
+      animatorSet.start();
    }
 }
